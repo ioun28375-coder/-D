@@ -1,0 +1,173 @@
+-- by tam
+-- Custom UI Executor Test Script (สคริปต์สำหรับทดสอบในแมพส่วนตัว)
+-- Language Support: Thai & English
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- สร้าง ScreenGui หลัก
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TamTestExecutorUI"
+screenGui.ResetOnSpawn = false
+
+-- ป้องกันกรณีรันใน Executor หรือทดสอบใน Studio
+if gethui then
+    screenGui.Parent = gethui()
+elseif syn and syn.protect_gui then
+    syn.protect_gui(screenGui)
+    screenGui.Parent = CoreGui
+else
+    screenGui.Parent = PlayerGui
+end
+
+-- สร้าง กรอบหลัก (Main Frame - สีดำดาร์กโหมด)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 340, 0, 260)
+mainFrame.Position = UDim2.new(0.5, -170, 0.5, -130)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true -- สามารถลากย้ายตำแหน่งได้
+mainFrame.Parent = screenGui
+
+-- ใส่ความมนให้ขอบกรอบ
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.Parent = mainFrame
+
+-- หัวข้อเมนู (Title Bar - ภาษาไทย/อังกฤษ)
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, -50, 0, 40)
+titleLabel.Position = UDim2.new(0, 15, 0, 5)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "by tam | Test Menu (เมนูทดสอบ)"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 16
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = mainFrame
+
+-- ปุ่มปิด/เปิดเมนู (Close/Minimize Button)
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -38, 0, 8)
+closeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 75, 75)
+closeButton.TextSize = 16
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.Parent = mainFrame
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 6)
+closeCorner.Parent = closeButton
+
+-- ปุ่มที่ 1: เพิ่มความเร็วการเดิน (Speed Boost)
+local speedBtn = Instance.new("TextButton")
+speedBtn.Name = "SpeedButton"
+speedBtn.Size = UDim2.new(0.9, 0, 0, 42)
+speedBtn.Position = UDim2.new(0.05, 0, 0.24, 0)
+speedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+speedBtn.Text = "Speed Boost / เพิ่มความเร็ว (WalkSpeed: 32)"
+speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+speedBtn.TextSize = 13
+speedBtn.Font = Enum.Font.SourceSansSemibold
+speedBtn.Parent = mainFrame
+
+local speedCorner = Instance.new("UICorner")
+speedCorner.CornerRadius = UDim.new(0, 8)
+speedCorner.Parent = speedBtn
+
+-- ปุ่มที่ 2: เพิ่มพลังการกระโดด (High Jump)
+local jumpBtn = Instance.new("TextButton")
+jumpBtn.Name = "JumpButton"
+jumpBtn.Size = UDim2.new(0.9, 0, 0, 42)
+jumpBtn.Position = UDim2.new(0.05, 0, 0.46, 0)
+jumpBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+jumpBtn.Text = "High Jump / กระโดดสูง (JumpPower: 100)"
+jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+jumpBtn.TextSize = 13
+jumpBtn.Font = Enum.Font.SourceSansSemibold
+jumpBtn.Parent = mainFrame
+
+local jumpCorner = Instance.new("UICorner")
+jumpCorner.CornerRadius = UDim.new(0, 8)
+jumpCorner.Parent = jumpBtn
+
+-- ปุ่มที่ 3: รีเซ็ตค่าปกติ (Reset Values)
+local resetBtn = Instance.new("TextButton")
+resetBtn.Name = "ResetButton"
+resetBtn.Size = UDim2.new(0.9, 0, 0, 42)
+resetBtn.Position = UDim2.new(0.05, 0, 0.68, 0)
+resetBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+resetBtn.Text = "Reset Stats / รีเซ็ตค่าดั้งเดิม"
+resetBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+resetBtn.TextSize = 13
+resetBtn.Font = Enum.Font.SourceSansSemibold
+resetBtn.Parent = mainFrame
+
+local resetCorner = Instance.new("UICorner")
+resetCorner.CornerRadius = UDim.new(0, 8)
+resetCorner.Parent = resetBtn
+
+-- ระบบการทำงานภายในเมนู (Logic & Functionalities)
+local speedToggled = false
+speedBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        speedToggled = not speedToggled
+        if speedToggled then
+            hum.WalkSpeed = 32
+            speedBtn.BackgroundColor3 = Color3.fromRGB(0, 140, 255)
+            speedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            hum.WalkSpeed = 16
+            speedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        end
+    end
+end)
+
+local jumpToggled = false
+jumpBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        jumpToggled = not jumpToggled
+        if jumpToggled then
+            hum.JumpPower = 100
+            jumpBtn.BackgroundColor3 = Color3.fromRGB(0, 140, 255)
+            jumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            hum.JumpPower = 50
+            jumpBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        end
+    end
+end)
+
+resetBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        speedToggled = false
+        jumpToggled = false
+        hum.WalkSpeed = 16
+        hum.JumpPower = 50
+        speedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        jumpBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    end
+end)
+
+-- ปุ่มซ่อน/แสดงเมนู
+closeButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+end)
