@@ -1,0 +1,228 @@
+-- by tam
+-- UGI Style Test Script (สคริปต์หน้าจอ UI สไตล์ UGI สำหรับทดสอบ)
+-- Language Support: Thai & English
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- 1. สร้าง ScreenGui หลัก
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "UGI_TestUI"
+screenGui.ResetOnSpawn = false
+
+-- ตรวจสอบการแสดงผลรองรับ Executor และ Studio
+if gethui then
+    screenGui.Parent = gethui()
+elseif syn and syn.protect_gui then
+    syn.protect_gui(screenGui)
+    screenGui.Parent = CoreGui
+else
+    screenGui.Parent = PlayerGui
+end
+
+-- 2. กรอบหลัก UGI Main Frame (สีดำดาร์กโหมด มนขอบ)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 420, 0, 280)
+mainFrame.Position = UDim2.new(0.5, -210, 0.5, -140)
+mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 12)
+mainCorner.Parent = mainFrame
+
+-- Stroke ขอบเรืองแสงสีเทาเข้ม
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(40, 40, 45)
+mainStroke.Thickness = 1.5
+mainStroke.Parent = mainFrame
+
+-- 3. แถบหัวข้อ (Header Bar)
+local headerBar = Instance.new("Frame")
+headerBar.Name = "HeaderBar"
+headerBar.Size = UDim2.new(1, 0, 0, 40)
+headerBar.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+headerBar.BorderSizePixel = 0
+headerBar.Parent = mainFrame
+
+local headerCorner = Instance.new("UICorner")
+headerCorner.CornerRadius = UDim.new(0, 12)
+headerCorner.Parent = headerBar
+
+local titleText = Instance.new("TextLabel")
+titleText.Name = "TitleText"
+titleText.Size = UDim2.new(1, -50, 1, 0)
+titleText.Position = UDim2.new(0, 15, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "by tam | UGI Interface (ระบบทดสอบ)"
+titleText.TextColor3 = Color3.fromRGB(240, 240, 240)
+titleText.TextSize = 15
+titleText.Font = Enum.Font.GothamBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = headerBar
+
+-- ปุ่มปิด (Close Button)
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseButton"
+closeBtn.Size = UDim2.new(0, 26, 0, 26)
+closeBtn.Position = UDim2.new(1, -33, 0.5, -13)
+closeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+closeBtn.Text = "×"
+closeBtn.TextColor3 = Color3.fromRGB(255, 90, 90)
+closeBtn.TextSize = 18
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = headerBar
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 6)
+closeCorner.Parent = closeBtn
+
+-- 4. แถบข้างสำหรับเลือกเมนู (Side Navigation Bar)
+local navBar = Instance.new("Frame")
+navBar.Name = "NavBar"
+navBar.Size = UDim2.new(0, 110, 1, -50)
+navBar.Position = UDim2.new(0, 8, 0, 45)
+navBar.BackgroundColor3 = Color3.fromRGB(23, 23, 26)
+navBar.BorderSizePixel = 0
+navBar.Parent = mainFrame
+
+local navCorner = Instance.new("UICorner")
+navCorner.CornerRadius = UDim.new(0, 8)
+navCorner.Parent = navBar
+
+-- 5. พื้นที่แสดงเนื้อหา (Content Frame)
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Size = UDim2.new(1, -134, 1, -50)
+contentFrame.Position = UDim2.new(0, 124, 0, 45)
+contentFrame.BackgroundColor3 = Color3.fromRGB(23, 23, 26)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = mainFrame
+
+local contentCorner = Instance.new("UICorner")
+contentCorner.CornerRadius = UDim.new(0, 8)
+contentCorner.Parent = contentFrame
+
+-- ปุ่มเมนูที่ 1 (Main Tab)
+local tab1Btn = Instance.new("TextButton")
+tab1Btn.Name = "Tab1Button"
+tab1Btn.Size = UDim2.new(0.9, 0, 0, 32)
+tab1Btn.Position = UDim2.new(0.05, 0, 0.08, 0)
+tab1Btn.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+tab1Btn.Text = "Main / หลัก"
+tab1Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tab1Btn.TextSize = 12
+tab1Btn.Font = Enum.Font.GothamMedium
+tab1Btn.Parent = navBar
+
+local tab1Corner = Instance.new("UICorner")
+tab1Corner.CornerRadius = UDim.new(0, 6)
+tab1Corner.Parent = tab1Btn
+
+-- ฟังก์ชันภายในหน้า Main Content
+local speedBtn = Instance.new("TextButton")
+speedBtn.Name = "SpeedButton"
+speedBtn.Size = UDim2.new(0.9, 0, 0, 38)
+speedBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+speedBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+speedBtn.Text = "Walk Speed / ความเร็วเดิน (+Speed)"
+speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+speedBtn.TextSize = 12
+speedBtn.Font = Enum.Font.Gotham
+speedBtn.Parent = contentFrame
+
+local speedCorner = Instance.new("UICorner")
+speedCorner.CornerRadius = UDim.new(0, 6)
+speedCorner.Parent = speedBtn
+
+local jumpBtn = Instance.new("TextButton")
+jumpBtn.Name = "JumpButton"
+jumpBtn.Size = UDim2.new(0.9, 0, 0, 38)
+jumpBtn.Position = UDim2.new(0.05, 0, 0.32, 0)
+jumpBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+jumpBtn.Text = "Jump Power / ความสูงกระโดด (+Jump)"
+jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+jumpBtn.TextSize = 12
+jumpBtn.Font = Enum.Font.Gotham
+jumpBtn.Parent = contentFrame
+
+local jumpCorner = Instance.new("UICorner")
+jumpCorner.CornerRadius = UDim.new(0, 6)
+jumpCorner.Parent = jumpBtn
+
+local resetBtn = Instance.new("TextButton")
+resetBtn.Name = "ResetButton"
+resetBtn.Size = UDim2.new(0.9, 0, 0, 38)
+resetBtn.Position = UDim2.new(0.05, 0, 0.54, 0)
+resetBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+resetBtn.Text = "Reset / รีเซ็ตค่าดั้งเดิม"
+resetBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+resetBtn.TextSize = 12
+resetBtn.Font = Enum.Font.Gotham
+resetBtn.Parent = contentFrame
+
+local resetCorner = Instance.new("UICorner")
+resetCorner.CornerRadius = UDim.new(0, 6)
+resetCorner.Parent = resetBtn
+
+-- ระบบการทำงาน (Functions & Events)
+local speedToggled = false
+speedBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        speedToggled = not speedToggled
+        if speedToggled then
+            hum.WalkSpeed = 35
+            speedBtn.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+            speedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            hum.WalkSpeed = 16
+            speedBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        end
+    end
+end)
+
+local jumpToggled = false
+jumpBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        jumpToggled = not jumpToggled
+        if jumpToggled then
+            hum.JumpPower = 120
+            jumpBtn.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+            jumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            hum.JumpPower = 50
+            jumpBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        end
+    end
+end)
+
+resetBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        speedToggled = false
+        jumpToggled = false
+        hum.WalkSpeed = 16
+        hum.JumpPower = 50
+        speedBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+        speedBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        jumpBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+        jumpBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    end
+end)
+
+-- ปุ่มเปิด/ปิดหน้าต่าง
+closeBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+end)
